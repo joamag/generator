@@ -1,11 +1,27 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"math/rand"
+	"net"
 	"strconv"
 	"time"
 )
+
+const (
+	HOST = "google.com:80"
+)
+
+func Loader(host string) {
+	conn, err := net.Dial("tcp", host)
+	if err != nil {
+		return
+	}
+	fmt.Fprintf(conn, "GET / HTTP/1.0\r\n\r\n")
+	status, err := bufio.NewReader(conn).ReadString('\n')
+	fmt.Println(status)
+}
 
 func Printer(channel chan int, delay time.Duration, count int) {
 	// iterates over the requested count of
@@ -30,6 +46,10 @@ func main() {
 	// used in the communication between both of
 	// the routine structures
 	channel := make(chan int)
+
+	// runs the loader with the pre-defined contant
+	// host so that the first line is printed
+	go Loader(HOST)
 
 	// starts the printer co-routine that is
 	// going to be used
