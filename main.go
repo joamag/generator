@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -19,7 +20,9 @@ func Loader(host string) {
 		return
 	}
 	fmt.Fprintf(conn, "GET / HTTP/1.0\r\n\r\n")
-	status, err := bufio.NewReader(conn).ReadString('\n')
+	reader := bufio.NewReader(conn)
+	status, err := reader.ReadString('\n')
+	status = strings.TrimRight(status, "\r\n")
 	fmt.Println(status)
 }
 
